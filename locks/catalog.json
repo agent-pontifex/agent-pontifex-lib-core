@@ -1,0 +1,51 @@
+{
+  "$comment": "agent-pontifex lock catalog. `name` may contain {placeholders} filled by callers. Every runtime slice under locks/ is generated from this file by ORESoftware/ores-locks-and-leases/templates/lib-core/gen_org_locks.py \u2014 edit here, then re-run.",
+  "org": "agent-pontifex",
+  "prefix": "agent-pontifex",
+  "entries": [
+    {
+      "domain": "migrations",
+      "name": "apply",
+      "layers": {
+        "fiducia": true,
+        "pgAdvisory": true
+      },
+      "pgScope": "session",
+      "wait": false,
+      "description": "One migration runner at a time. Session scope because some DDL cannot run inside a transaction; fail fast so a second runner exits instead of queueing."
+    },
+    {
+      "domain": "jobs",
+      "name": "singleton:{job}",
+      "layers": {
+        "fiducia": true,
+        "pgAdvisory": true
+      },
+      "pgScope": "transaction",
+      "wait": false,
+      "description": "A named job that must not overlap itself across replicas. Skip the run when it is already held."
+    },
+    {
+      "domain": "outbox",
+      "name": "drain",
+      "layers": {
+        "fiducia": false,
+        "pgAdvisory": true
+      },
+      "pgScope": "transaction",
+      "wait": false,
+      "description": "Transactional-outbox drainer: single-database exclusion is enough, and the transaction that reads the batch is the one that holds the lock."
+    },
+    {
+      "domain": "tenant",
+      "name": "{tenant_id}/mutate",
+      "layers": {
+        "fiducia": true,
+        "pgAdvisory": true
+      },
+      "pgScope": "transaction",
+      "wait": true,
+      "description": "Serialize mutations of one tenant's aggregate across every server that can write it. Waits; contention here is normal."
+    }
+  ]
+}

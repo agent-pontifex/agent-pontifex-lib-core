@@ -1,0 +1,25 @@
+[package]
+org = "agent-pontifex"
+name = "agent-pontifex-lib-core"
+version = "0.1.0"
+description = "Canonical agent-pontifex core library"
+license = "MIT"
+
+[package.repository]
+vcs = "git"
+url = "https://github.com/agent-pontifex/agent-pontifex-lib-core"
+
+[dependencies]
+"oresoftware/ores-locks-and-leases" = "=0.1.1"
+"agent-pontifex/agent-pontifex-interfaces" = "^0.1.0"
+
+[install]
+dir = ".vendor/.zed"
+
+[targets.repository]
+dir = "."
+
+[targets.locks]
+dir = "locks"
+name = "agent-pontifex-locks"
+adapter = "none"
