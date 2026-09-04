@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/agent-pontifex/agent-pontifex-lib-core/locks/contracts/json-schema/contract.schema.json",
+  "$comment": "agent-pontifex lock catalog \u2014 JSON Schema authority. Peer of ../typespec/main.tsp (ORESoftware/ores-contracts); neither is generated from the other.",
+  "x-ores-namespace": "AgentPontifex.Locks",
+  "$defs": {
+    "LockDomain": {
+      "type": "string",
+      "enum": [
+        "jobs",
+        "migrations",
+        "outbox",
+        "tenant"
+      ],
+      "description": "The lock domains this org uses; a key is `agent-pontifex/<domain>/<name>`."
+    },
+    "LockLayers": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Whether the fiducia lease and/or the Postgres advisory lock are engaged for an entry.",
+      "properties": {
+        "fiducia": {
+          "type": "boolean"
+        },
+        "pgAdvisory": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "fiducia",
+        "pgAdvisory"
+      ]
+    },
+    "PgScope": {
+      "type": "string",
+      "enum": [
+        "transaction",
+        "session"
+      ],
+      "description": "Postgres advisory-lock scope: inside a transaction the routine commits, or on one dedicated session with no transaction."
+    },
+    "LockCatalogEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "One catalog row. `name` may contain {placeholders} callers fill in.",
+      "properties": {
+        "domain": {
+          "$ref": "#/$defs/LockDomain"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "layers": {
+          "$ref": "#/$defs/LockLayers"
+        },
+        "pgScope": {
+          "$ref": "#/$defs/PgScope"
+        },
+        "wait": {
+          "type": "boolean",
+          "description": "true: block up to the wait budget; false: fail fast with `contention`."
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "domain",
+        "name",
+        "layers",
+        "pgScope",
+        "wait",
+        "description"
+      ]
+    },
+    "LockCatalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The catalog: `locks/catalog.json` conforms to this.",
+      "properties": {
+        "org": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "prefix": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LockCatalogEntry"
+          }
+        }
+      },
+      "required": [
+        "org",
+        "prefix",
+        "entries"
+      ]
+    }
+  }
+}

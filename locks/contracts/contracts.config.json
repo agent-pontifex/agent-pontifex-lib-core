@@ -1,0 +1,14 @@
+{
+  "$comment": "ores-contracts: both authorities are human-authored peers. Run from locks/: `npx ores-contracts check --config contracts/contracts.config.json`.",
+  "typespec": "contracts/typespec/main.tsp",
+  "jsonSchema": "contracts/json-schema/contract.schema.json",
+  "out": "generated",
+  "target": "target/ores-contracts",
+  "artifacts": [
+    "rust/types.rs",
+    "typescript/types.d.ts",
+    "typescript/validate.mjs",
+    "dart/models.dart"
+  ],
+  "tspCompile": true
+}

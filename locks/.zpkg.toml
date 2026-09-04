@@ -1,0 +1,44 @@
+[package]
+org = "agent-pontifex"
+name = "agent-pontifex-locks"
+version = "0.1.0"
+description = "agent-pontifex lock routines: ORESoftware/ores-locks-and-leases (fiducia lease around a Postgres advisory lock) wrapped with the agent-pontifex key prefix and lock catalog"
+license = "MIT"
+keywords = ["lock", "lease", "postgres", "fiducia", "polyglot"]
+
+[package.repository]
+vcs = "git"
+url = "https://github.com/agent-pontifex/agent-pontifex-lib-core"
+
+# The shared routines, and the org's interfaces so catalog entries can
+# reference shared types (tenant ids, job names) instead of bare strings.
+[dependencies]
+"ORESoftware/ores-locks-and-leases" = "^0.1.0"
+"agent-pontifex/agent-pontifex-interfaces" = "^0.1.0"
+"ORESoftware/ores-contracts" = "^0.1.0"
+
+[install]
+dir = "../.vendor/.zed"
+
+[targets.rust]
+dir = "rust"
+adapter = "rust"
+
+[targets.typescript]
+dir = "typescript"
+adapter = "node"
+
+[targets.dart]
+dir = "dart"
+adapter = "dart"
+
+[targets.gleam]
+dir = "gleam"
+adapter = "none"
+
+[targets.golang]
+dir = "golang"
+adapter = "none"
+
+[scripts]
+contracts = "npx --yes --package=https://github.com/ORESoftware/ores-contracts/archive/f79ea8d8d94d7a9e78c15f7e46ecae8e4b584d2e.tar.gz ores-contracts check --config contracts/contracts.config.json"
