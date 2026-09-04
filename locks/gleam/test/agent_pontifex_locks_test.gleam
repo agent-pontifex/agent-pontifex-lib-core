@@ -1,7 +1,7 @@
+import agent_pontifex_locks as org_locks
 import gleeunit
 import gleeunit/should
 import ores_locks_and_leases as locks
-import agent_pontifex_locks as org_locks
 
 pub fn main() {
   gleeunit.main()
