@@ -1,0 +1,23 @@
+[package]
+name = "agent-pontifex-locks"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+description = "agent-pontifex lock routines: ores-locks-and-leases with the agent-pontifex key prefix and lock catalog"
+repository = "https://github.com/agent-pontifex/agent-pontifex-lib-core"
+
+[lib]
+path = "lib.rs"
+
+[features]
+default = []
+pg = ["ores-locks-and-leases/pg"]
+fiducia = ["ores-locks-and-leases/fiducia"]
+full = ["pg", "fiducia"]
+
+[dependencies]
+ores-locks-and-leases = { git = "https://github.com/ORESoftware/ores-locks-and-leases.git", tag = "v0.1.1" }
+
+[lints.rust]
+unsafe_code = "forbid"
