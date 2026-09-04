@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build:shared": "npm --prefix ../.vendor/.zed/oresoftware/ores-locks-and-leases/src/ts ci --no-audit --no-fund && npm --prefix ../.vendor/.zed/oresoftware/ores-locks-and-leases/src/ts run build",
+    "build:shared": "npm --prefix ../.vendor/.zed/oresoftware/ores-locks-and-leases/src/ts ci --no-audit --no-fund && node ../.vendor/.zed/oresoftware/ores-locks-and-leases/src/ts/node_modules/typescript/bin/tsc -p ../.vendor/.zed/oresoftware/ores-locks-and-leases/src/ts/tsconfig.json",
     "build": "npm run build:shared && tsc -p tsconfig.json",
     "test": "npm run build && node --test test/*.test.mjs"
   },
