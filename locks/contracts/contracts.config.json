@@ -5,10 +5,10 @@
   "out": "generated",
   "target": "target/ores-contracts",
   "artifacts": [
-    "rust/types.rs",
-    "typescript/types.d.ts",
-    "typescript/validate.mjs",
-    "dart/models.dart"
+    "langs/rust/types.rs",
+    "langs/typescript/types.d.ts",
+    "langs/typescript/validate.mjs",
+    "langs/dart/models.dart"
   ],
   "tspCompile": true
 }

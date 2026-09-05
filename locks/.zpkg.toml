@@ -21,23 +21,23 @@ url = "https://github.com/agent-pontifex/agent-pontifex-lib-core"
 dir = ".vendor/.zed"
 
 [targets.rust]
-dir = "rust"
+dir = "langs/rust"
 adapter = "rust"
 
 [targets.typescript]
-dir = "typescript"
+dir = "langs/typescript"
 adapter = "node"
 
 [targets.dart]
-dir = "dart"
+dir = "langs/dart"
 adapter = "dart"
 
 [targets.gleam]
-dir = "gleam"
+dir = "langs/gleam"
 adapter = "none"
 
 [targets.golang]
-dir = "golang"
+dir = "langs/golang"
 adapter = "none"
 
 [scripts]

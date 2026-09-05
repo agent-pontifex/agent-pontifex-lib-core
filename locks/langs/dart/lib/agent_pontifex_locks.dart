@@ -1,5 +1,5 @@
 /// agent-pontifex lock routines. Re-exports `ores_locks_and_leases` and adds the
-/// org's key prefix and lock catalog. Generated from `../catalog.json` by
+/// org's key prefix and lock catalog. Generated from `../../catalog.json` by
 /// ores-locks-and-leases' `templates/lib-core/gen_org_locks.py`.
 library;
 

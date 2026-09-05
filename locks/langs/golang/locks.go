@@ -1,5 +1,5 @@
 // Package agent_pontifexlocks wraps ORESoftware/ores-locks-and-leases with the agent-pontifex
-// key prefix and lock catalog. Generated from ../catalog.json by
+// key prefix and lock catalog. Generated from ../../catalog.json by
 // ores-locks-and-leases' templates/lib-core/gen_org_locks.py.
 package agent_pontifexlocks
 
