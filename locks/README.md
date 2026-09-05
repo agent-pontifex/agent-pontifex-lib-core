@@ -4,15 +4,17 @@ Lock routines for **agent-pontifex**, wrapping
 [`ORESoftware/ores-locks-and-leases`](https://github.com/ORESoftware/ores-locks-and-leases)
 — a fiducia-cloud lease around a Postgres advisory lock, each layer
 switchable, fencing tokens threaded through — with this org's key prefix and
-lock catalog. One nested zed package, five runtimes:
+lock catalog. One nested zed package, five runtimes collected under `langs/`
+so language implementations cannot collide with package-level directories such
+as `contracts/`:
 
 | Path | Package |
 | --- | --- |
-| `rust` | `agent-pontifex-locks` crate |
-| `typescript` | `@agent-pontifex/locks` |
-| `dart` | `agent_pontifex_locks` |
-| `gleam` | `agent_pontifex_locks` |
-| `golang` | `github.com/agent-pontifex/agent-pontifex-lib-core/locks/golang` |
+| `langs/rust` | `agent-pontifex-locks` crate |
+| `langs/typescript` | `@agent-pontifex/locks` |
+| `langs/dart` | `agent_pontifex_locks` |
+| `langs/gleam` | `agent_pontifex_locks` |
+| `langs/golang` | `github.com/agent-pontifex/agent-pontifex-lib-core/locks/langs/golang` |
 
 Every key this org locks is `agent-pontifex/<domain>/<name>`; the prefix is applied
 by `key(domain, name)` in each runtime so two orgs sharing a database cannot

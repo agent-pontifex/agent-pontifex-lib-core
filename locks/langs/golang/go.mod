@@ -1,4 +1,4 @@
-module github.com/agent-pontifex/agent-pontifex-lib-core/locks/golang
+module github.com/agent-pontifex/agent-pontifex-lib-core/locks/langs/golang
 
 go 1.22
 

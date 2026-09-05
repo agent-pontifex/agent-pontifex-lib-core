@@ -2,7 +2,7 @@
 //!
 //! Re-exports [`ores_locks_and_leases`] and adds the org's key prefix and lock
 //! catalog. Every key this crate builds is `agent-pontifex/<domain>/<name>`.
-//! Generated from `../catalog.json` by ores-locks-and-leases'
+//! Generated from `../../catalog.json` by ores-locks-and-leases'
 //! `templates/lib-core/gen_org_locks.py`; edit the catalog, not this file.
 
 pub use ores_locks_and_leases::*;

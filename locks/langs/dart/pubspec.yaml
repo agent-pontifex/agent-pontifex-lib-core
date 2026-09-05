@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   ores_locks_and_leases:
-    path: ../.vendor/.zed/oresoftware/ores-locks-and-leases/src/dart
+    path: ../../.vendor/.zed/oresoftware/ores-locks-and-leases/src/dart
 
 dev_dependencies:
   lints: ^4.0.0

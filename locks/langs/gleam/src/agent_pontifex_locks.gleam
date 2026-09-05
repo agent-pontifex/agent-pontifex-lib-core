@@ -1,5 +1,5 @@
 //// agent-pontifex lock routines: `ores_locks_and_leases` with the org's key prefix
-//// and lock catalog. Generated from `../catalog.json` by
+//// and lock catalog. Generated from `../../catalog.json` by
 //// ores-locks-and-leases' `templates/lib-core/gen_org_locks.py`.
 
 import gleam/list
