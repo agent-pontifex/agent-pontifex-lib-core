@@ -1,0 +1,19 @@
+{
+  "formatVersion": 1,
+  "protocol": "grpc",
+  "protoPackage": "agent_pontifex.locks.v1",
+  "service": "LockCatalogService",
+  "methods": [
+    {
+      "name": "GetLockCatalog",
+      "request": "GetLockCatalogRequest",
+      "response": "LockCatalog",
+      "clientStreaming": false,
+      "serverStreaming": false,
+      "readOnly": true
+    }
+  ],
+  "protoSha256": "b70004e41211fa792b3c7fb8837bb06447c4c4040110bdbd66c6f9951b1623ba",
+  "authorization": "server-policy-required",
+  "persistence": "serialized-migrator-only"
+}

@@ -1,0 +1,27 @@
+{
+  "formatVersion": 1,
+  "authorityPolicy": "peer-human-authored",
+  "sources": {
+    "typeSpecSha256": "375c105bc76295e911488e63dc8492a577355de21098f329f4d9d1f2dfeb821e",
+    "jsonSchemaSha256": "3315a5960c0064ff5544aa349e913c037bb1ee7189aa16615f40f30a373c3510",
+    "catalogSha256": "de5e2d52c3d2daa66391a126d0bc8aa42a3b6ecd4309e52b4c591e23076b3d53",
+    "projectionConfigSha256": "3016a4a6f2309b83846309721d1fcc0859e210b8d885185d5afd19fa5037d553",
+    "protobufLockSha256": "15c35773ccd754d069a3f6d4dff0b88af57861587df02a3951154faa2b8934c3"
+  },
+  "declarations": [
+    "LockCatalog",
+    "LockCatalogEntry",
+    "LockDomain",
+    "LockLayers",
+    "PgScope"
+  ],
+  "outputs": {
+    "sql/from-typespec.sql": "c7535a28c2f222fd10dcb8ee31200214957fd42d4cdef21a7854db7c81c6d00b",
+    "sql/from-json-schema.sql": "c7535a28c2f222fd10dcb8ee31200214957fd42d4cdef21a7854db7c81c6d00b",
+    "sql/catalog-seed.sql": "993e5319baeb506afe29872b2945a9844a71398431305916f63848e0af6c45ac",
+    "protobuf/agent_pontifex/locks/v1/locks.proto": "b70004e41211fa792b3c7fb8837bb06447c4c4040110bdbd66c6f9951b1623ba",
+    "grpc/manifest.json": "a199704917a9c6d5b3dd9dc3a27b3c793b192daef940d1977f41adf03ac5f185"
+  },
+  "grpcService": "agent_pontifex.locks.v1.LockCatalogService/GetLockCatalog",
+  "sqlLanesEqual": true
+}

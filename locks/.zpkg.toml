@@ -41,4 +41,4 @@ dir = "langs/golang"
 adapter = "none"
 
 [scripts]
-test = "npx --yes --package=https://github.com/ORESoftware/ores-contracts/archive/f79ea8d8d94d7a9e78c15f7e46ecae8e4b584d2e.tar.gz ores-contracts check --config contracts/contracts.config.json"
+test = "npx --yes --package=https://github.com/ORESoftware/ores-contracts/archive/f79ea8d8d94d7a9e78c15f7e46ecae8e4b584d2e.tar.gz ores-contracts check --config contracts/contracts.config.json && node tools/generate-contract-projections.mjs --check && node --test tests/contract-projections.test.mjs"
