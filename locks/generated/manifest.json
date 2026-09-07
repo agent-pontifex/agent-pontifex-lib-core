@@ -3,8 +3,8 @@
   "authorityPolicy": "peer-human-authored",
   "sources": {
     "typeSpecSha256": "375c105bc76295e911488e63dc8492a577355de21098f329f4d9d1f2dfeb821e",
-    "jsonSchemaSha256": "8dcc62d523d3838ec570b48442e5d7d60718540dd516efd8cc575fff8d96c048",
-    "catalogSha256": "4ce4e74a26f96220ee6384c447fe5b09e3e597eccd8df66557fd071b91b51d1c",
+    "jsonSchemaSha256": "3315a5960c0064ff5544aa349e913c037bb1ee7189aa16615f40f30a373c3510",
+    "catalogSha256": "de5e2d52c3d2daa66391a126d0bc8aa42a3b6ecd4309e52b4c591e23076b3d53",
     "projectionConfigSha256": "3016a4a6f2309b83846309721d1fcc0859e210b8d885185d5afd19fa5037d553",
     "protobufLockSha256": "15c35773ccd754d069a3f6d4dff0b88af57861587df02a3951154faa2b8934c3"
   },
