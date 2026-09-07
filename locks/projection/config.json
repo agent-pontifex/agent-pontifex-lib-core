@@ -1,0 +1,16 @@
+{
+  "formatVersion": 1,
+  "namespace": "AgentPontifex.Locks",
+  "protoPackage": "agent_pontifex.locks.v1",
+  "sqlSchema": "agent_pontifex_locks",
+  "rootModel": "LockCatalog",
+  "entryModel": "LockCatalogEntry",
+  "service": {
+    "name": "LockCatalogService",
+    "method": "GetLockCatalog",
+    "request": "GetLockCatalogRequest",
+    "response": "LockCatalog",
+    "streaming": "unary",
+    "readOnly": true
+  }
+}

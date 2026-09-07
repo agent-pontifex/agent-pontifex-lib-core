@@ -1,0 +1,158 @@
+name: lock contract SQL, Protobuf, and gRPC projections
+
+on:
+  pull_request:
+    paths:
+      - "locks/catalog.json"
+      - "locks/contracts/**"
+      - "locks/projection/**"
+      - "locks/tools/generate-contract-projections.mjs"
+      - "locks/tools/projection-ir.mjs"
+      - "locks/tools/projection-render.mjs"
+      - "locks/tests/contract-projections.test.mjs"
+      - "locks/generated/**"
+      - ".github/workflows/lock-contract-projections.yml"
+  push:
+    branches: [main]
+    paths:
+      - "locks/catalog.json"
+      - "locks/contracts/**"
+      - "locks/projection/**"
+      - "locks/tools/generate-contract-projections.mjs"
+      - "locks/tools/projection-ir.mjs"
+      - "locks/tools/projection-render.mjs"
+      - "locks/tests/contract-projections.test.mjs"
+      - "locks/generated/**"
+      - ".github/workflows/lock-contract-projections.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lock-contract-projections-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  projections:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      PGPASSWORD: postgres
+    steps:
+      - name: Check out without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          show-progress: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22.22.1"
+
+      - name: Verify deterministic generation and negative gates
+        run: |
+          node --check locks/tools/generate-contract-projections.mjs
+          node --check locks/tools/projection-ir.mjs
+          node --check locks/tools/projection-render.mjs
+          node locks/tools/generate-contract-projections.mjs --check
+          node --test locks/tests/contract-projections.test.mjs
+
+      - name: Install protobuf and PostgreSQL clients
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler postgresql-client
+
+      - name: Compile the generated gRPC descriptor
+        run: |
+          mkdir -p "$RUNNER_TEMP/descriptor"
+          protoc \
+            --proto_path=locks/generated/protobuf \
+            --include_imports \
+            --include_source_info \
+            --descriptor_set_out="$RUNNER_TEMP/descriptor/agent-pontifex-locks.binpb" \
+            locks/generated/protobuf/agent_pontifex/locks/v1/locks.proto
+          test -s "$RUNNER_TEMP/descriptor/agent-pontifex-locks.binpb"
+          protoc --decode_raw < "$RUNNER_TEMP/descriptor/agent-pontifex-locks.binpb" \
+            > "$RUNNER_TEMP/descriptor/agent-pontifex-locks.txt"
+          grep -q 'LockCatalogService' "$RUNNER_TEMP/descriptor/agent-pontifex-locks.txt"
+          grep -q 'GetLockCatalog' "$RUNNER_TEMP/descriptor/agent-pontifex-locks.txt"
+
+      - name: Materialize both SQL lanes and compare catalog read-back
+        shell: bash
+        run: |
+          set -euo pipefail
+          for db in ap_locks_typespec ap_locks_json_schema; do
+            psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 \
+              -c "CREATE DATABASE $db"
+          done
+
+          psql -h 127.0.0.1 -U postgres -d ap_locks_typespec -v ON_ERROR_STOP=1 \
+            -f locks/generated/sql/from-typespec.sql \
+            -f locks/generated/sql/catalog-seed.sql
+          psql -h 127.0.0.1 -U postgres -d ap_locks_json_schema -v ON_ERROR_STOP=1 \
+            -f locks/generated/sql/from-json-schema.sql \
+            -f locks/generated/sql/catalog-seed.sql
+
+          catalog_query="$(cat <<'SQL'
+          SELECT 'column', table_name, ordinal_position::text, column_name,
+                 data_type, is_nullable, COALESCE(column_default, '')
+          FROM information_schema.columns
+          WHERE table_schema = 'agent_pontifex_locks'
+          ORDER BY table_name, ordinal_position;
+          SELECT 'constraint', c.relname, con.conname,
+                 pg_get_constraintdef(con.oid, true)
+          FROM pg_constraint con
+          JOIN pg_class c ON c.oid = con.conrelid
+          JOIN pg_namespace n ON n.oid = c.relnamespace
+          WHERE n.nspname = 'agent_pontifex_locks'
+          ORDER BY c.relname, con.conname;
+          SELECT 'index', tablename, indexname, indexdef
+          FROM pg_indexes
+          WHERE schemaname = 'agent_pontifex_locks'
+          ORDER BY tablename, indexname;
+          SELECT 'row_security', c.relname,
+                 c.relrowsecurity::text, c.relforcerowsecurity::text
+          FROM pg_class c
+          JOIN pg_namespace n ON n.oid = c.relnamespace
+          WHERE n.nspname = 'agent_pontifex_locks'
+            AND c.relkind = 'r'
+          ORDER BY c.relname;
+          SELECT 'public_grants', count(*)::text
+          FROM information_schema.table_privileges
+          WHERE table_schema = 'agent_pontifex_locks'
+            AND grantee = 'PUBLIC';
+          SELECT 'catalog', org, prefix
+          FROM agent_pontifex_locks.lock_catalogs
+          ORDER BY org;
+          SELECT 'entry', org, ordinal::text, domain, name,
+                 fiducia::text, pg_advisory::text, pg_scope, wait::text, description
+          FROM agent_pontifex_locks.lock_catalog_entries
+          ORDER BY org, ordinal;
+          SQL
+          )"
+
+          psql -h 127.0.0.1 -U postgres -d ap_locks_typespec \
+            -At -F '|' -v ON_ERROR_STOP=1 -c "$catalog_query" \
+            > "$RUNNER_TEMP/typespec.catalog"
+          psql -h 127.0.0.1 -U postgres -d ap_locks_json_schema \
+            -At -F '|' -v ON_ERROR_STOP=1 -c "$catalog_query" \
+            > "$RUNNER_TEMP/json-schema.catalog"
+
+          diff -u "$RUNNER_TEMP/typespec.catalog" "$RUNNER_TEMP/json-schema.catalog"
+          test "$(grep -c '^entry|' "$RUNNER_TEMP/typespec.catalog")" -eq 4
+          test "$(grep -c '^row_security|.*|true|true$' "$RUNNER_TEMP/typespec.catalog")" -eq 2
+          grep -q '^public_grants|0$' "$RUNNER_TEMP/typespec.catalog"

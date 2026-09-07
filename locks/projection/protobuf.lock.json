@@ -1,0 +1,62 @@
+{
+  "formatVersion": 1,
+  "rule": "Append-only field and enum numbers. Never reuse; reserve removed names and numbers.",
+  "messages": {
+    "agent_pontifex.locks.v1.LockLayers": {
+      "fields": {
+        "fiducia": 1,
+        "pgAdvisory": 2
+      },
+      "reservedNames": [],
+      "reservedNumbers": []
+    },
+    "agent_pontifex.locks.v1.LockCatalogEntry": {
+      "fields": {
+        "domain": 1,
+        "name": 2,
+        "layers": 3,
+        "pgScope": 4,
+        "wait": 5,
+        "description": 6
+      },
+      "reservedNames": [],
+      "reservedNumbers": []
+    },
+    "agent_pontifex.locks.v1.LockCatalog": {
+      "fields": {
+        "org": 1,
+        "prefix": 2,
+        "entries": 3
+      },
+      "reservedNames": [],
+      "reservedNumbers": []
+    },
+    "agent_pontifex.locks.v1.GetLockCatalogRequest": {
+      "fields": {},
+      "reservedNames": [],
+      "reservedNumbers": []
+    }
+  },
+  "enums": {
+    "agent_pontifex.locks.v1.LockDomain": {
+      "values": {
+        "LOCK_DOMAIN_UNSPECIFIED": 0,
+        "LOCK_DOMAIN_JOBS": 1,
+        "LOCK_DOMAIN_MIGRATIONS": 2,
+        "LOCK_DOMAIN_OUTBOX": 3,
+        "LOCK_DOMAIN_TENANT": 4
+      },
+      "reservedNames": [],
+      "reservedNumbers": []
+    },
+    "agent_pontifex.locks.v1.PgScope": {
+      "values": {
+        "PG_SCOPE_UNSPECIFIED": 0,
+        "PG_SCOPE_TRANSACTION": 1,
+        "PG_SCOPE_SESSION": 2
+      },
+      "reservedNames": [],
+      "reservedNumbers": []
+    }
+  }
+}
