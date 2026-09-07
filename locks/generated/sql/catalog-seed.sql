@@ -8,7 +8,7 @@ DELETE FROM agent_pontifex_locks.lock_catalog_entries WHERE org = 'agent-pontife
 INSERT INTO agent_pontifex_locks.lock_catalog_entries
   (org, ordinal, domain, name, fiducia, pg_advisory, pg_scope, wait, description)
 VALUES
-  ('agent-pontifex', 0, 'migrations', 'apply', true, true, 'session', false, 'One migration runner at a time.'),
-  ('agent-pontifex', 1, 'jobs', 'singleton:{job}', true, true, 'transaction', false, 'A named job that must not overlap itself across replicas.'),
-  ('agent-pontifex', 2, 'outbox', 'drain', false, true, 'transaction', false, 'Transactional-outbox drainer.'),
-  ('agent-pontifex', 3, 'tenant', '{tenant_id}/mutate', true, true, 'transaction', true, 'Serialize mutations of one tenant aggregate.');
+  ('agent-pontifex', 0, 'migrations', 'apply', true, true, 'session', false, 'One migration runner at a time. Session scope because some DDL cannot run inside a transaction; fail fast so a second runner exits instead of queueing.'),
+  ('agent-pontifex', 1, 'jobs', 'singleton:{job}', true, true, 'transaction', false, 'A named job that must not overlap itself across replicas. Skip the run when it is already held.'),
+  ('agent-pontifex', 2, 'outbox', 'drain', false, true, 'transaction', false, 'Transactional-outbox drainer: single-database exclusion is enough, and the transaction that reads the batch is the one that holds the lock.'),
+  ('agent-pontifex', 3, 'tenant', '{tenant_id}/mutate', true, true, 'transaction', true, 'Serialize mutations of one tenant''s aggregate across every server that can write it. Waits; contention here is normal.');
