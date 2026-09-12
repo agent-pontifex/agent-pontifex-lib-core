@@ -55,6 +55,7 @@ jobs:
       - name: Check out without persisted credentials
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
           show-progress: false
 
@@ -62,6 +63,28 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: "22.22.1"
+
+      - name: Compare the five independently authored lock declarations
+        uses: ORESoftware/typespec-json-schema-validator@eac61635922c244c7a37829c63d0966de44ff800
+        with:
+          typespec: locks/contracts/typespec/main.tsp
+          schema: locks/contracts/json-schema/contract.schema.json
+          instances: locks/contracts/instances
+          report: .typespec-json-schema-validator/locks/report.json
+          sarif: .typespec-json-schema-validator/locks/report.sarif
+          contract_ir: .typespec-json-schema-validator/locks/contract-ir.json
+          output_dir: .typespec-json-schema-validator/locks/generated
+
+      - name: Admit current lock evidence and require altered-evidence refusals
+        uses: ORESoftware/typespec-json-schema-validator/actions/test-consumer-admission@eac61635922c244c7a37829c63d0966de44ff800
+        with:
+          typespec: locks/contracts/typespec/main.tsp
+          schema: locks/contracts/json-schema/contract.schema.json
+          report: .typespec-json-schema-validator/locks/report.json
+          contract_ir: .typespec-json-schema-validator/locks/contract-ir.json
+          generated_schema: .typespec-json-schema-validator/locks/generated/typespec.generated.schema.json
+          expected_declarations: '["AgentPontifex.Locks.LockCatalog","AgentPontifex.Locks.LockCatalogEntry","AgentPontifex.Locks.LockDomain","AgentPontifex.Locks.LockLayers","AgentPontifex.Locks.PgScope"]'
+          verification: .typespec-json-schema-validator/locks/consumer-verification.json
 
       - name: Verify deterministic generation and negative gates
         run: |
@@ -156,3 +179,16 @@ jobs:
           test "$(grep -c '^entry|' "$RUNNER_TEMP/typespec.catalog")" -eq 4
           test "$(grep -c '^row_security|.*|true|true$' "$RUNNER_TEMP/typespec.catalog")" -eq 2
           grep -q '^public_grants|0$' "$RUNNER_TEMP/typespec.catalog"
+
+      - name: Verify the peer authorities remain unchanged
+        run: git diff --exit-code -- locks/contracts/typespec locks/contracts/json-schema
+
+      - name: Retain lock parity and admission evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: lock-contract-admission-${{ github.run_id }}
+          path: .typespec-json-schema-validator/locks/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
