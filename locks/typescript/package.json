@@ -1,0 +1,23 @@
+{
+  "name": "@agent-pontifex/locks",
+  "version": "0.1.0",
+  "description": "agent-pontifex lock routines: @oresoftware/locks-and-leases with the agent-pontifex key prefix and lock catalog",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:shared": "npm --prefix ../../.vendor/.zed/ORESoftware/ores-locks-and-leases/src/ts ci --no-audit --no-fund && npm --prefix ../../.vendor/.zed/ORESoftware/ores-locks-and-leases/src/ts run build",
+    "build": "npm run build:shared && tsc -p tsconfig.json",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@oresoftware/locks-and-leases": "file:../../.vendor/.zed/ORESoftware/ores-locks-and-leases/src/ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
