@@ -11,6 +11,7 @@ url = "https://github.com/agent-pontifex/agent-pontifex-lib-core"
 
 [dependencies]
 "oresoftware/ores-locks-and-leases" = "=0.1.1"
+"oresoftware/next-loggers" = "^0.1.0"
 "agent-pontifex/agent-pontifex-interfaces" = "^0.1.0"
 
 [install]
