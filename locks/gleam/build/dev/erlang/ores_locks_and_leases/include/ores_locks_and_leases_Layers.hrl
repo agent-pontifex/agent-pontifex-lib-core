@@ -1,1 +1,0 @@
--record(layers, {fiducia :: boolean(), pg_advisory :: boolean()}).
