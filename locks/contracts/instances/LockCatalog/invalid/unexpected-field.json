@@ -1,0 +1,18 @@
+{
+  "org": "agent-pontifex",
+  "prefix": "agent-pontifex",
+  "entries": [
+    {
+      "domain": "jobs",
+      "name": "singleton:{job}",
+      "layers": {
+        "fiducia": true,
+        "pgAdvisory": true
+      },
+      "pgScope": "transaction",
+      "wait": false,
+      "description": "Bounded singleton fixture",
+      "credential": "synthetic-unrecognized-field"
+    }
+  ]
+}
