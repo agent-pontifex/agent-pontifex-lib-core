@@ -70,5 +70,17 @@ node tools/generate-contract-projections.mjs --check
 node --test tests/contract-projections.test.mjs
 ```
 
-CI additionally compiles a descriptor with `protoc`, applies both SQL lanes to
-separate PostgreSQL databases, and compares catalog read-back.
+Before checking projections, CI runs the compiler-backed
+[`typespec-json-schema-validator`](https://github.com/ORESoftware/typespec-json-schema-validator)
+against all five declarations in these two lock authorities and the valid/invalid
+instances under `contracts/instances/`. Both authorities must agree, the complete
+declaration scope must be admitted against current source bytes, and the canonical
+altered-evidence refusal tests must pass. The repository-local canary is separate
+and does not substitute for this domain gate.
+
+CI then compiles a descriptor with `protoc`, applies both SQL lanes to separate
+PostgreSQL databases, and compares catalog read-back. Generated Schema B, Contract
+IR, and admission receipts are retained as evidence, never authored authorities.
+This gate certifies the lock catalog contract and its tested projections; live
+coordinator claims, lease fencing, and production repository writes still require
+their own acceptance evidence.
