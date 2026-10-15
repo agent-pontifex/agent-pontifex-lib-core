@@ -6,5 +6,9 @@ temp/worktrees
 # Sanctioned scratch locations - AGENTS.md requires both, trailing-slash form
 tmp/
 temp/
+
 # typespec-json-schema-validator comparison evidence (generated; never an authority)
 .typespec-json-schema-validator/
+
+# Machine-local agent instruction symlink (absolute path; never committed)
+.ores/
